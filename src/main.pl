@@ -11,7 +11,7 @@ kartu(merah, 8).
 kartu(merah, 9).
 kartu(merah, 0).
 kartu(merah, skip).
-kartu(merah, draw2).
+kartu(merah, draw_two).
 kartu(merah, revers).
 
 /* kuning */
@@ -27,7 +27,7 @@ kartu(kuning, 8).
 kartu(kuning, 9).
 kartu(kuning, 0).
 kartu(kuning, skip).
-kartu(kuning, draw2).
+kartu(kuning, draw_two).
 kartu(kuning, revers).
 
 /* hijau */
@@ -59,7 +59,7 @@ kartu(biru, 8).
 kartu(biru, 9).
 kartu(biru, 0).
 kartu(biru, skip).
-kartu(biru, draw2).
+kartu(biru, draw_two).
 kartu(biru, revers).
 
 /* hitam */
