@@ -67,21 +67,3 @@ kartu(biru, revers).
 kartu(hitam, wild_draw_four).
 kartu(hitam, wild).
 
-/* validMove */
-validMove(kartu(Warna, _), kartu(Warna, _)).
-validMove(kartu(_, Nilai), kartu(_, Nilai)).
-validMove(kartu(hitam, _), _).
-
-/* discard pile */
-/* discardTop (kartu awal) */
-discardTop(kartu(warna, skip)).
-discardTop(kartu(warna, draw_two)).
-discardTop(kartu(warna, revers)).
-discardTop(kartu(warna, wild)).
-discardTop(kartu(warna, wild_draw_four)).
-
-/* validasi nama pemain */
-cekNama(Nama, [_ | T]) :- !.
-cekNama(Nama, [Nama | T]) :-
-    cekNama(Nama, T).
-

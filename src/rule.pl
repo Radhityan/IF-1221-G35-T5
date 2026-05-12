@@ -22,14 +22,3 @@ inputPemain(Index, Max, List, Atribut) :-
     read(Nama), validasi(Nama, List, Valid),
     Index2 is Index + 1,
     inputPemain(Index2, Max, [Valid | List], Atribut).
-
-validasi(Nama, List, Valid) :-
-    cekNama(Nama, List), !,
-    write('Nama sudah digunaka. Masukkan nama lain: '),
-    read(Nama1),
-    validasi(Nama1, List, Valid).
-
-
-
-
-
