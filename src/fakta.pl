@@ -1,0 +1,87 @@
+/* FAKTA */
+/* merah */
+kartu(merah, 1).
+kartu(merah, 2).
+kartu(merah, 3).
+kartu(merah, 3).
+kartu(merah, 4).
+kartu(merah, 5).
+kartu(merah, 6).
+kartu(merah, 7).
+kartu(merah, 8).
+kartu(merah, 9).
+kartu(merah, 0).
+kartu(merah, skip).
+kartu(merah, draw_two).
+kartu(merah, revers).
+
+/* kuning */
+kartu(kuning, 1).
+kartu(kuning, 2).
+kartu(kuning, 3).
+kartu(kuning, 3).
+kartu(kuning, 4).
+kartu(kuning, 5).
+kartu(kuning, 6).
+kartu(kuning, 7).
+kartu(kuning, 8).
+kartu(kuning, 9).
+kartu(kuning, 0).
+kartu(kuning, skip).
+kartu(kuning, draw_two).
+kartu(kuning, revers).
+
+/* hijau */
+kartu(hijau, 1).
+kartu(hijau, 2).
+kartu(hijau, 3).
+kartu(hijau, 3).
+kartu(hijau, 4).
+kartu(hijau, 5).
+kartu(hijau, 6).
+kartu(hijau, 7).
+kartu(hijau, 8).
+kartu(hijau, 9).
+kartu(hijau, 0).
+kartu(hijau, skip).
+kartu(hijau, draw_two).
+kartu(hijau, revers).
+
+/* biru */
+kartu(biru, 1).
+kartu(biru, 2).
+kartu(biru, 3).
+kartu(biru, 3).
+kartu(biru, 4).
+kartu(biru, 5).
+kartu(biru, 6).
+kartu(biru, 7).
+kartu(biru, 8).
+kartu(biru, 9).
+kartu(biru, 0).
+kartu(biru, skip).
+kartu(biru, draw_two).
+kartu(biru, revers).
+
+/* hitam */
+kartu(hitam, wild_draw_four).
+kartu(hitam, wild).
+
+/* validMove */
+validMove(kartu(Warna, _), kartu(Warna, _)).
+validMove(kartu(_, Nilai), kartu(_, Nilai)).
+validMove(kartu(hitam, _), _).
+
+/* discard pile */
+/* discardTop (kartu awal) */
+discardTop(kartu(warna, skip)).
+discardTop(kartu(warna, draw_two)).
+discardTop(kartu(warna, revers)).
+discardTop(kartu(warna, wild)).
+discardTop(kartu(warna, wild_draw_four)).
+
+/* validasi nama pemain */
+cekNama(Nama, [_ | T]) :- !.
+cekNama(Nama, [Nama | T]) :-
+    cekNama(Nama, T).
+
