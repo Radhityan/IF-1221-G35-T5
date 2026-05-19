@@ -1,41 +1,28 @@
-consult('utilitasList.pl').
-consult('fakta.pl').
+:- include('utilitasList.pl').
+:- include('aksi.pl').
+:- include('fakta.pl').
+
 :- dynamic(giliran/1).
-:- dynamic(urutan/1). % buat sementara
+:- dynamic(giliran1/1). 
+:- dynamic(urutan/1).
 :- dynamic(pemain/1). 
 :- dynamic(tangan/2).
 :- dynamic(discardPile/1).
-
-panjang([], 0).
-panjang([H|T], Hasil) :-
-    panjang(T, HasilLama),
-    Hasil is HasilLama + 1.
-
-cariKartu(Hasil) :-
-    retractall(list_kartu(_)),
-    assertz(list_kartu([])),
-    kartu(Warna, Jenis),
-    update_list(kartu(Warna, Jenis)),
-    fail.
-
-cariKartu(Hasil) :- list_kartu(Hasil), !.
-
-update_list(Kartu) :-
-    retract(list_kartu(List)),
-    ListBaru = [Kartu|List],
-    assertz(list_kartu(ListBaru)).
 
 startGame :-
     retractall(giliran(_)),
     retractall(giliran1(_)), 
     retractall(urutan(_)),
-    retractall(tangan(_)),
+    retractall(pemain(_)),
+    retractall(tangan(_,_)),
     retractall(discardPile(_)),
     write('Masukkan jumlah pemain: '),
     read(Jumlah),
     cek(Jumlah),
     acakUrutan,
-    discardTop(KartuAwal).
+    discardTop(_),
+    giliran(GiliranPertama), nl,
+    write('Giliran '), write(GiliranPertama), write('.').
 
 cek(Jumlah):-
     Jumlah >= 2, Jumlah =< 4, !,
@@ -52,24 +39,25 @@ inputPemain(Index, Max) :-
 inputPemain(Index, Max) :-
     Index =< Max,
     write('Masukkan nama pemain '), write(Index), write(': '),
-    read(Nama), validasi(Nama, Valid),
+    read(Nama), validasiNama(Nama, Valid),
     assertz(pemain(Valid)), 
-    Index2 is Index + 1,
-    inputPemain(Index2, Max).
+    NextIndex is Index + 1,
+    inputPemain(NextIndex, Max).
 
-validasi(Nama, Valid) :-
-    urutan(Nama), !, 
+validasiNama(Nama, Valid) :-
+    pemain(Nama), !, 
     write('Nama sudah digunakan. Masukkan nama lain: '),
-    read(Nama1), validasi(Nama1, Valid).
-
-validasi(Nama, Nama).
+    read(Nama1), validasiNama(Nama1, Valid).
+validasiNama(Nama, Nama).
 
 acakUrutan :-
     semuaPemain(ListPemain),
     acakList(ListPemain, ListUrutan),
     assertz(urutan(ListUrutan)), 
     urutanPemain(ListUrutan),
-    pembagianKartu(ListUrutan).
+    pembagianKartu(ListUrutan),
+    ListUrutan = [Pertama|_],
+    assertz(giliran(Pertama)).
 
 semuaPemain(_) :-
     pemain(Nama),
@@ -88,29 +76,52 @@ acakList([], []) :- !.
 acakList(ListAwal, [Pilihan | Sisa]) :-
     panjang(ListAwal, PanjangList),
     random(0, PanjangList, Acak),
-    hapusElemenList(Acak, ListAwal, SisaElmt),
-    acakList(SisaElmt,Sisa).
+    hapusElemen(Acak, ListAwal, Pilihan, SisaElemen),
+    acakList(SisaElemen,Sisa).
 
-hapusElemenList(1, [_|T], T).
-hapusElemenList(N, [H|T], [H|HasilTail]) :-
-    N > 1,
-    N1 is N - 1,
-    write(HasilTail),
-    hapusElemenList(N1, T, HasilTail).
+hapusElemen(0, [H|T], H, T) :- !.
+hapusElemen(Index, [H|T], Elmt, [H|Sisa]) :-
+    Index > 0,
+    NewIndex is Index - 1,
+    hapusElemen(NewIndex, T, Elmt, Sisa).
 
 urutanPemain([Pertama | Sisa]) :-
     write('Urutan pemain: '), write(Pertama),
-    sisaPemain(Sisa), nl.
+    sisaPemain(Sisa), write('.'),nl.
 sisaPemain([Kedua|Sisa]) :-
     write(' - '), write(Kedua),
     sisaPemain(Sisa).
+sisaPemain([]).
 
-pembagianKartu(ListUrutan) :-
-    write('Setiap pemain mendapatkan 7 kartu acak.'), nl,
-    random(1, 54, deckKartu),
-    pembagianKartu(ListUrutan).
+pembagianKartu([]) :-
+    nl, write('Setiap pemain mendapatkan 7 kartu acak.'), nl, nl.
+pembagianKartu([Nama | Sisa]) :-
+    bagiKartu(Nama, 7, []),
+    pembagianKartu(Sisa).
+
+bagiKartu(Nama, 0, Tangan) :-
+    assertz(tangan(Nama, Tangan)), !.
+bagiKartu(Nama, N, TanganLama) :-
+    N > 0,
+    cariKartu(ListKartu),
+    panjang(ListKartu, P),
+    MaxIdx is P + 1,
+    random(1, MaxIdx, Index),
+    getElement(ListKartu, Index, KartuAcak),
+    appendUjung(TanganLama, KartuAcak, TanganBaru),
+    N1 is N - 1,
+    bagiKartu(Nama, N1, TanganBaru).
 
 discardTop(KartuAwal) :-
-    panjang(deckKartu, PanjangList),
-    random(0,PanjangList, KartuAwal),
-    write('Kartu discard top: '), write(KartuAwal).
+    cariKartu(ListKartu),
+    panjang(ListKartu, PanjangList),
+    MaxIdx is PanjangList + 1,
+    random(1, MaxIdx, Index),
+    getElement(ListKartu, Index, KartuAwal), 
+    KartuAwal = kartu(W,J),
+    W \= hitam,
+    J \= skip, J \= draw_two, J \= revers, J \= mimic,
+    assertz(discardPile(KartuAwal)),
+    write('Kartu discard top: '), write(W), write(' - '), write(J), write('.'), nl, !.
+discardTop(KartuAwal) :-
+    discardTop(KartuAwal).
