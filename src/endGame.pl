@@ -1,4 +1,4 @@
-
+:-consult('utilitasList.pl').
 hitung_poin(kartu(_, Jenis), Jenis) :- 
 integer(Jenis), !.
 hitung_poin(kartu(_, Jenis), 10) :- 

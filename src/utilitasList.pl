@@ -35,7 +35,7 @@ termasuk_member(X, [_|T]) :-
 termasuk_member(X, T).
 
 /* Implementasi manual findall untuk mengumpulkan fakta kartu*/
-:- dynamic list_kartu/1.
+:- dynamic (list_kartu)/1.
 
 cariKartu(Hasil) :-
 retractall(list_kartu(_)),
