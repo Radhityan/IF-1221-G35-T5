@@ -1,10 +1,9 @@
-:-consult('utilitasList.pl').
-hitung_poin(kartu(_, Jenis), Jenis) :- 
-integer(Jenis), !.
-hitung_poin(kartu(_, Jenis), 10) :- 
-termasuk_member(Jenis, [skip, revers, reverse, draw_two]), !.
-hitung_poin(kartu(_, Jenis), 20) :- 
-termasuk_member(Jenis, [wild, wild_draw_four, mimic]), !.
+:- initialization(consult('utilitasList.pl')).
+
+hitung_poin(kartu(_, Jenis), Poin) :- 
+(termasuk_member(Jenis, [skip, revers, draw_two]) -> Poin = 10
+; termasuk_member(Jenis, [wild, wild_draw_four, mimic]) -> Poin = 20
+; Poin = Jenis), !.
 
 hitung_total([], 0).
 hitung_total([Kartu|Sisa], TotalPoin) :-
@@ -27,7 +26,7 @@ insert_pemain(X, [Y|T], [Y|Nt]) :-
 insert_pemain(X, T, Nt).
 
 endGame :- 
-urutan_pemain(ListPemain),
+urutan(ListPemain),
 kumpulkan_data(ListPemain, Data),
 sort_leaderboard(Data, Leaderboard),
 write('Permainan selesai!'), nl,
