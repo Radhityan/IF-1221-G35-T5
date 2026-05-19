@@ -7,7 +7,7 @@ hapusElemenList(N, [H|T], [H|HasilTail]) :-
 
 /* Implementasi manual length */
 panjang([], 0).
-panjang([H|T], Hasil) :-
+panjang([_|T], Hasil) :-
 panjang(T, HasilLama),
 Hasil is HasilLama + 1.
 
@@ -28,6 +28,11 @@ getElement([_|T], Index, Element) :-
 Index > 1,
 NextIndex is Index - 1,
 getElement(T, NextIndex, Element).
+
+/* Implementasi manual member */
+termasuk_member(X, [X|_]) :- !.
+termasuk_member(X, [_|T]) :-
+termasuk_member(X, T).
 
 /* Implementasi manual findall untuk mengumpulkan fakta kartu*/
 :- dynamic list_kartu/1.
