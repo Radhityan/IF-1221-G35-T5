@@ -6,7 +6,8 @@ ambilKartu :-
 giliran(Pemain),
 cariKartu(ListKartu),
 panjang(ListKartu, HasilPanjang),
-random(1, HasilPanjang, IndexRandom),
+MaxRandom is HasilPanjang + 1.
+random(1, MaxRandom, IndexRandom),
 getElement(ListKartu, IndexRandom, KartuAcak),
 tangan(Pemain, TanganLama),
 appendUjung(TanganLama, KartuAcak, TanganBaru),
