@@ -1,19 +1,5 @@
-:- consult('utilitasList.pl').
-:- consult('startGame.pl').
-
-/* Aksi ambilKartu */
-ambilKartu :- 
-giliran(Pemain),
-cariKartu(ListKartu),
-panjang(ListKartu, HasilPanjang),
-MaxRandom is HasilPanjang + 1.
-random(1, MaxRandom, IndexRandom),
-getElement(ListKartu, IndexRandom, KartuAcak),
-tangan(Pemain, TanganLama),
-appendUjung(TanganLama, KartuAcak, TanganBaru),
-retract(tangan(Pemain, TanganLama)),
-assertz(tangan(Pemain, TanganBaru)),
-write(Pemain), write(' mendapatkan kartu: '), write(KartuAcak), nl, !.
+:- initialization(consult('utilitasList.pl')).
+:- initialization(consult('sembunyikanKartu.pl')).
 
 /* Aksi-Aksi Pendukung*/
 /* Aksi lihatCommand */
@@ -54,7 +40,7 @@ cek_sembunyi(_, _) :- !.
 
 /* Aksi cekInfo */
 
-cekInfo :- discard_pile([kartu(Warna, Jenis) | _]),
+cekInfo :- discardPile([kartu(Warna, Jenis) | _]),
 write('Kartu discard top: '), write(Warna), write('-'), write(Jenis), nl, nl, 
 urutan_pemain(ListPemain),
 write('Urutan pemain: '),
