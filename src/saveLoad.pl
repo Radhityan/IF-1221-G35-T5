@@ -1,11 +1,4 @@
-/* Deklarasi Dynamic */
-:- dynamic urutanPemain/1.
-:- dynamic giliran/1.
-:- dynamic discardTop/1.
-:- dynamic warnaTop/1.
-:- dynamic kartuPemain/2.
-:- dynamic arahPermainan/1.
-:- dynamic statusUni/1.
+
 
 /* Save Game */
 saveGame:-

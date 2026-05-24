@@ -1,4 +1,4 @@
-/*I mplemenrasi manual hapus list */
+/*Implementasi manual hapus list */
 hapusElemenList(1, [_|T], T).
 hapusElemenList(N, [H|T], [H|HasilTail]) :-
     N > 1,
@@ -20,33 +20,25 @@ appendUjung(T, Kartu, HasilAppend).
 reverseList([],[]).
 reverseList([Head|Tail], Reversed):-
     reverseList(Tail,Temp),
-    appendUjung(Temp,[Head],Reversed).
+    appendUjung(Temp, Head, Reversed).
 
-/* Implementasi manual nth0 */
-getElement([H|_], 1, H) :- !.
-getElement([_|T], Index, Element) :-
+/* Implementasi manual nth1 */
+getElement(1, [H|_], H) :- !.
+getElement(Index, [_|T], Element) :-
 Index > 1,
 NextIndex is Index - 1,
-getElement(T, NextIndex, Element).
+getElement(NextIndex, T, Element).
 
 /* Implementasi manual member */
 termasuk_member(X, [X|_]) :- !.
 termasuk_member(X, [_|T]) :-
 termasuk_member(X, T).
 
-/* Implementasi manual findall untuk mengumpulkan fakta kartu*/
-:- dynamic (list_kartu)/1.
-
-cariKartu(Hasil) :-
-retractall(list_kartu(_)),
-assertz(list_kartu([])),
-kartu(Warna, Jenis),
-update_list(kartu(Warna, Jenis)),
-fail.
-
-cariKartu(Hasil) :- list_kartu(Hasil), !.
-
-update_list(Kartu) :-
-retract(list_kartu(List)),
-ListBaru = [Kartu|List],
-assertz(list_kartu(ListBaru)).
+/* Implementasi alternatif panjang untuk skip kartu yang disembunyikan pada cekInfo */
+panjang_tidakdisembunyikan(_, [], 0) :- !.
+panjang_tidakdisembunyikan(Pemain, [Kartu|Sisa], Jumlah) :-
+sembunyi(Pemain, Kartu), !,
+panjang_tidakdisembunyikan(Pemain, Sisa, Jumlah).
+panjang_tidakdisembunyikan(Pemain, [_|Sisa], Jumlah) :-
+panjang_tidakdisembunyikan(Pemain, Sisa, SisaJumlah),
+Jumlah is SisaJumlah + 1.
