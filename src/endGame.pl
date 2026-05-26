@@ -1,5 +1,3 @@
-:- initialization(consult('utilitasList.pl')).
-
 hitung_poin(kartu(_, Jenis), Poin) :- 
 (termasuk_member(Jenis, [skip, revers, draw_two]) -> Poin = 10
 ; termasuk_member(Jenis, [wild, wild_draw_four, mimic]) -> Poin = 20

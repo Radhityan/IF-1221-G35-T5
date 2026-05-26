@@ -1,6 +1,3 @@
-:- initialization(consult('utilitasList.pl')).
-:- initialization(consult('sembunyikanKartu.pl')).
-
 /* Aksi-Aksi Pendukung*/
 /* Aksi lihatCommand */
 
@@ -29,12 +26,12 @@ print_daftar_kartu([], _, _) :- !.
 print_daftar_kartu([kartu(Warna, Jenis) | T], Index, Pemain) :-
 write(Index), write('. '),
 write(Warna), write('-'), write(Jenis),
-cek_sembunyi(Pemain, Index), nl,
+cek_sembunyi(Pemain, kartu(Warna, Jenis)), nl,
 NextIndex is Index + 1,
 print_daftar_kartu(T, NextIndex, Pemain).
 
-cek_sembunyi(Pemain, Index) :- 
-sembunyi(Pemain, Index),
+cek_sembunyi(Pemain, Kartu) :- 
+sembunyi(Pemain, Kartu),
 write(' (disembunyikan)'), !.
 cek_sembunyi(_, _) :- !.
 
@@ -42,7 +39,7 @@ cek_sembunyi(_, _) :- !.
 
 cekInfo :- discardPile([kartu(Warna, Jenis) | _]),
 write('Kartu discard top: '), write(Warna), write('-'), write(Jenis), nl, nl, 
-urutan_pemain(ListPemain),
+urutan(ListPemain),
 write('Urutan pemain: '),
 print_list_urutan(ListPemain), nl, nl,
 print_detail_pemain(ListPemain, 1), !.
@@ -57,7 +54,8 @@ print_list_urutan(T).
 print_detail_pemain([], _).
 print_detail_pemain([Nama|T], Index) :-
 tangan(Nama, ListKartu),
-panjang(ListKartu, Jumlah),
+/* panjang(ListKartu, Jumlah), */
+panjang_tidakdisembunyikan(Nama, ListKartu, Jumlah),
 write('Nama pemain '), write(Index), write(': '), write(Nama), nl,
 write('Jumlah kartu : '), write(Jumlah), nl, nl,
 NextIndex is Index + 1, 

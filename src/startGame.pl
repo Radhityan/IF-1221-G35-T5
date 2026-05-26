@@ -1,14 +1,3 @@
-:- include('utilitasList.pl').
-:- include('aksi.pl').
-:- include('fakta.pl').
-
-:- dynamic(giliran/1).
-:- dynamic(giliran1/1). 
-:- dynamic(urutan/1).
-:- dynamic(pemain/1). 
-:- dynamic(tangan/2).
-:- dynamic(discardPile/1).
-
 startGame :-
     retractall(giliran(_)),
     retractall(giliran1(_)), 
@@ -39,16 +28,31 @@ inputPemain(Index, Max) :-
 inputPemain(Index, Max) :-
     Index =< Max,
     write('Masukkan nama pemain '), write(Index), write(': '),
-    read(Nama), validasiNama(Nama, Valid),
-    assertz(pemain(Valid)), 
+    read(Nama), 
+    atom(Nama),
+    \+pemain(Nama), !,
+    assertz(pemain(Nama)),
     NextIndex is Index + 1,
     inputPemain(NextIndex, Max).
 
-validasiNama(Nama, Valid) :-
+
+inputPemain(Index, Max) :-
+    Index =< Max,
+    write('Nama sudah digunakan. Masukkan nama lain!'), nl, !,
+    inputPemain(Index, Max).
+    
+    
+    
+/* validasiNama(Nama, Valid),
+    assertz(pemain(Valid)), 
+    NextIndex is Index + 1,
+    inputPemain(NextIndex, Max).*/
+
+/* validasiNama(Nama, Valid) :-
     pemain(Nama), !, 
     write('Nama sudah digunakan. Masukkan nama lain: '),
     read(Nama1), validasiNama(Nama1, Valid).
-validasiNama(Nama, Nama).
+validasiNama(Nama, Nama). */
 
 acakUrutan :-
     semuaPemain(ListPemain),
@@ -107,7 +111,7 @@ bagiKartu(Nama, N, TanganLama) :-
     panjang(ListKartu, P),
     MaxIdx is P + 1,
     random(1, MaxIdx, Index),
-    getElement(ListKartu, Index, KartuAcak),
+    getElement(Index, ListKartu, KartuAcak),
     appendUjung(TanganLama, KartuAcak, TanganBaru),
     N1 is N - 1,
     bagiKartu(Nama, N1, TanganBaru).
@@ -117,11 +121,10 @@ discardTop(KartuAwal) :-
     panjang(ListKartu, PanjangList),
     MaxIdx is PanjangList + 1,
     random(1, MaxIdx, Index),
-    getElement(ListKartu, Index, KartuAwal), 
-    KartuAwal = kartu(W,J),
-    W \= hitam,
-    J \= skip, J \= draw_two, J \= revers, J \= mimic,
-    assertz(discardPile(KartuAwal)),
-    write('Kartu discard top: '), write(W), write(' - '), write(J), write('.'), nl, !.
-discardTop(KartuAwal) :-
-    discardTop(KartuAwal).
+    getElement(Index, ListKartu, KartuAcak), 
+    KartuAcak = kartu(W,J),
+    (W \= hitam, J \= skip, J \= draw_two, J \= revers, J \= mimic -> KartuAwal = KartuAcak,
+    assertz(discardPile([KartuAwal])),
+    write('Kartu discard top: '), write(W), write(' - '), write(J), write('.'), nl, !
+    ;discardTop(KartuAwal)).
+

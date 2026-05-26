@@ -1,5 +1,3 @@
-:-dynamic (uni\1).
-
 tangkap(Target):-
     uni(Target),
     tangan(Target, Tangan),
