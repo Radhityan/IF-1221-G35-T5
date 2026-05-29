@@ -1,3 +1,9 @@
+/* Kasus pemain dikenakan wild_draw_four */
+sembunyikanKartu(_) :-
+giliran(Pemain),
+pending_wild_draw_four(_, Pemain, _, _),
+write('Ada kartu wild_draw_four dimainkan! Anda hanya bisa melakukan aksi ambilKartu atau tantang. '), nl, !.
+
 /* Kasus sisa 1 kartu */
 sembunyikanKartu(_) :-
 giliran(Pemain),

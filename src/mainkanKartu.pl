@@ -7,6 +7,18 @@ gantiGiliran :-
     retract(giliran(_)),
     asserta(giliran(NextPemain)).
 
+mainkanKartu(_) :-
+    giliran(Pemain),
+    pending_wild_draw_four(_, Pemain, _, _),
+    write('Ada kartu wild_draw_four dimainkan! Anda hanya bisa melakukan aksi ambilKartu atau tantang. '), nl, !.
+
+mainkanKartu(X) :-
+    giliran(Pemain),
+    tangan(Pemain, ListKartu),
+    panjang(ListKartu, Jumlah),
+    (X < 1 ; X > Jumlah),
+    write('Indeks kartu tidak valid!'), nl, !.
+
 mainkanKartu(X):-
     giliran(Pemain),
     tangan(Pemain, ListKartu),
@@ -125,7 +137,6 @@ tantang :-
     ambil_kartu(Next, 6),
     retractall(pending_wild_draw_four(_, _, _, _)),
     gantiGiliran),
-    gantiGiliran,
     giliran(NextPemain),
     write('Giliran '), write(NextPemain), write('.'), nl.
 
