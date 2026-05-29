@@ -31,6 +31,18 @@ write(Pemain), write(' mendapatkan kartu: '), write(KartuAcak), nl,
 SisaJumlah is Jumlah - 1,
 ambil_kartu(Pemain, SisaJumlah).
 
+/* Aksi ambilKartu jika pemain tidak menantang kartu wild_draw_four */
+ambilKartu :-
+giliran(PemainSekarang),
+pending_wild_draw_four(Pemain, Next, _, _),
+PemainSekarang == Next, !,
+write('Anda memilih untuk tidak menantang '), write(Pemain), write('.'), nl,
+write('Anda dihukum mengambil 4 kartu dan giliran anda dilewati.'), nl,
+ambil_kartu(PemainSekarang, 4),
+retractall(pending_wild_draw_four(_, _, _, _)),
+gantiGiliran,
+giliran(NextPemain),
+write('Giliran '), write(NextPemain), write('.'), nl, !.
 
 /* Aksi ambilKartu */
 ambilKartu :- 
@@ -39,3 +51,5 @@ ambil_kartu(Pemain, 1),
 gantiGiliran,
 giliran(NextPemain),
 write('Giliran '), write(NextPemain), write('.'), nl, !.
+
+
