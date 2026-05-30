@@ -22,6 +22,14 @@ mainkanKartu(X) :-
 mainkanKartu(X):-
     giliran(Pemain),
     tangan(Pemain, ListKartu),
+    getElement(X, ListKartu, kartu(Warna, Jenis)),
+    \+ validasiKartu(Warna, Jenis),
+    write('Kartu '), write(Warna), write('-'), write(Jenis), 
+    write(' tidak cocok dengan kartu di atas discard pile!'), nl.
+
+mainkanKartu(X):-
+    giliran(Pemain),
+    tangan(Pemain, ListKartu),
     getElement(X , ListKartu, kartu(Warna, Jenis)),
     validasiKartu(Warna, Jenis),
     write(Pemain), write(' memainkan kartu: '), write(Warna), write('-'), write(Jenis), write('.'), nl,
@@ -36,14 +44,6 @@ mainkanKartu(X):-
     gantiGiliran,
     giliran(NextPemain),
     write('Giliran '), write(NextPemain), write('.'), nl, !.
-
-mainkanKartu(X):-
-    giliran(Pemain),
-    tangan(Pemain, ListKartu),
-    getElement(X, ListKartu, kartu(Warna, Jenis)),
-    \+ validasiKartu(Warna, Jenis),
-    write('Kartu '), write(Warna), write('-'), write(Jenis), 
-    write(' tidak cocok dengan kartu di atas discard pile!'), nl.
 
 validasiKartu(_, wild_draw_four) :-
     discardPile([kartu(_, wild_draw_four) | _]), !,
