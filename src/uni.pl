@@ -1,13 +1,35 @@
 uni(_) :-
 giliran(Pemain),
+pending_wild_draw_four(_, Pemain, _, _),
+write('Ada kartu wild_draw_four dimainkan! Anda hanya bisa melakukan aksi ambilKartu atau tantang. '), nl, !.
+
+uni(Index) :-
+giliran(Pemain),
+tangan(Pemain, ListKartu),
+panjang(ListKartu, Jumlah),
+(Index < 1 ; Index > Jumlah),
+write('Indeks kartu tidak valid!'), nl, !.
+
+uni(_) :-
+giliran(Pemain),
 tangan(Pemain, ListKartu),
 panjang(ListKartu, Jumlah), 
 Jumlah \= 2,
-ambilKartu(Pemain, 1),
+ambil_kartu(Pemain, 1),
 write('UNI tidak valid karena memainkan kartu tidak menyisakan 1 kartu!'), nl, 
 gantiGiliran,
 giliran(NextPemain),
 write('Giliran '), write(NextPemain), write('.'), nl, !.
+
+uni(Index) :-
+giliran(Pemain),
+tangan(Pemain, ListKartu),
+panjang(ListKartu, Jumlah),
+Jumlah == 2,
+getElement(Index, ListKartu, kartu(Warna, Jenis)),
+\+ validasiKartu(Warna, Jenis), !,
+write('Kartu '), write(Warna), write('-'), write(Jenis), 
+write(' tidak cocok dengan kartu di atas discard pile!'), nl.
 
 uni(Index) :-
 giliran(Pemain),
