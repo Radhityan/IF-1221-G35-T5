@@ -75,7 +75,7 @@ tangkap(Target):-
     tangan(Target, KartuTarget),
     panjang(KartuTarget, Jumlah),
     Jumlah == 1,
-    write('Gagal menangkap! '), write(Target), write(' sudah dalam berstatus UNI!'), nl,
+    write('Gagal menangkap! '), write(Target), write(' sudah dalam status UNI!'), nl,
     write(Pemain), write(' Mendapatkan satu kartu hukuman.'), nl,
     ambil_kartu(Pemain, 1), !.
 
@@ -85,7 +85,7 @@ tangkap(Target):-
     tangan(Target, KartuTarget),
     panjang(KartuTarget, Jumlah),
     Jumlah \= 1,
-    write('Gagal menangkap! '), write(Target), write(' tidak memiliki sisa kartu 1!'), nl,
+    write('Gagal menangkap! '), write(Target), write(' memiliki sisa kartu lebih dari 1!'), nl,
     write(Pemain), write(' Mendapatkan satu kartu hukuman.'), nl,
     ambil_kartu(Pemain, 1), !.
 
