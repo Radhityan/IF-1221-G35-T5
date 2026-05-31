@@ -8,6 +8,8 @@ startGame :-
     retractall(tangan(_,_)),
     retractall(discardPile(_)),
     retractall(status_UNI(_)),
+    retractall(arahPermainan(_)),
+    asserta(arahPermainan(kanan)),
     write('Masukkan jumlah pemain: '),
     read(Jumlah),
     cek(Jumlah),

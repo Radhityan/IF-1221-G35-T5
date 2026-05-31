@@ -16,6 +16,7 @@ appendUjung([], Kartu, [Kartu]).
 appendUjung([H|T], Kartu, [H|HasilAppend]) :- 
 appendUjung(T, Kartu, HasilAppend).
 
+appendDepan(T ,H ,[H|T]).
 /* Implementasi manual reverse */
 reverseList([],[]).
 reverseList([Head|Tail], Reversed):-

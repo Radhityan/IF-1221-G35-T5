@@ -81,7 +81,27 @@ efekKartu(draw_two):-
     
 
 efekKartu(revers):-
+    arahPermainan(kanan),
+    retractall(arahPermainan(_)),
+    asserta(arahPermainan(kiri)),
+    giliran(Pemain),
+    urutan([_|UrutanLama]),
+    urutan(SemuaPemain),
+    panjang(SemuaPemain, JumlahPemain),
+    JumlahPemain \= 2,
+    reverseList(UrutanLama, Temp),
+    appendDepan(Temp ,Pemain ,UrutanBaru),
+    retract(urutan(_)),
+    asserta(urutan(UrutanBaru)),
+    write('Urutan giliran dibalik!'), nl.
+
+efekKartu(revers):-
+    arahPermainan(kiri),
+    retractall(arahPermainan(_)),
+    asserta(arahPermainan(kanan)),
     urutan(UrutanLama),
+    panjang(UrutanLama, JumlahPemain),
+    JumlahPemain == 2,
     reverseList(UrutanLama, UrutanBaru),
     retract(urutan(_)),
     asserta(urutan(UrutanBaru)),
@@ -97,7 +117,7 @@ efekKartu(wild):-
 efekKartu(wild_draw_four):-
     giliran(Pemain),
     urutan([_, Next|_]),
-    discardPile([_, kartu(WarnaLama, AngkaLama)|_]),
+    discardPile([kartu(WarnaLama, AngkaLama)|_]),
     write('Silahkan pilih warna: '), read(WarnaBaru),
     termasuk_member(WarnaBaru, [merah, kuning, hijau, biru]), !,
     retractall(pending_wild_draw_four(_, _, _, _)),

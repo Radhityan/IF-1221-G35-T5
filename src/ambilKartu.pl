@@ -14,7 +14,7 @@ ListBaru = [Kartu|List],
 assertz(list_kartu(ListBaru)).
 
 /* Helper mengambil kartu untuk 1 atau lebih kartu */
-ambil_kartu(Pemain, 0) :- status_UNI(Pemain), retract(status_UNI(Pemain)), !.
+ambil_kartu(Pemain, 0) :- status_UNI(Pemain), retract(status_UNI(Pemain)), write('status UNI '), write(Pemain), write('Hilang!'), nl, !.
 ambil_kartu(Pemain, 0) :- \+status_UNI(Pemain), !.
 ambil_kartu(Pemain, Jumlah) :-
 Jumlah > 0,
