@@ -2,6 +2,9 @@
 /* Aksi lihatCommand */
 
 lihatCommand :-
+\+ giliran(_), !, fail.
+
+lihatCommand :-
 giliran(Pemain),
 pending_wild_draw_four(_, Pemain, _, _), !,
 write('Aksi utama yang tersedia:'), nl,
