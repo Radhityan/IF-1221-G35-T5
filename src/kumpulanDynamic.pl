@@ -12,4 +12,7 @@
 :- dynamic(uni/1).
 /* Deklarasi Dynamic dari sembunyikanKartu */
 :- dynamic(sembunyi/2).
+/* Deklarasi Dynamic dari saveLoad */
+:- dynamic(arahPermainan/1).
+:- dynamic(listAwal/1).
 

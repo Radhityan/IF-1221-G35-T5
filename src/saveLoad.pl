@@ -54,30 +54,21 @@ lakukanSimpan(NamaFile) :-
 /* Tulis seluruh state permainan ke file */
 simpanState(Stream) :-
     urutan(ListPemain),
-    format(Stream, 'urutan:~w.~n', [ListPemain]),
+    format(Stream, 'urutan:~q.~n', [ListPemain]),
 
     giliran(Giliran),
-    format(Stream, 'giliran:~w.~n', [Giliran]),
+    format(Stream, 'giliran:~q.~n', [Giliran]),
 
     discardPile(Discard),
-    format(Stream, 'discardPile:~w.~n', [Discard]),
+    format(Stream, 'discardPile:~q.~n', [Discard]),
 
-    simpanUni(Stream),
     simpanSemuaTangan(Stream, ListPemain).
-
-/* Simpan status UNI semua pemain */
-simpanUni(Stream) :-
-    uni(PemainUni),
-    format(Stream, 'uni:~w.~n', [PemainUni]),
-    fail.
-
-simpanUni(_).
 
 /* Simpan kartu tangan semua pemain secara rekursif */
 simpanSemuaTangan(_, []).
 simpanSemuaTangan(Stream, [Pemain|Sisa]) :-
     tangan(Pemain, ListKartu),
-    format(Stream, 'tangan(~w):~w.~n', [Pemain, ListKartu]),
+    format(Stream, 'tangan(~q):~q.~n', [Pemain, ListKartu]),
     simpanSemuaTangan(Stream, Sisa).
 
 
@@ -120,18 +111,11 @@ muatState(NamaFile) :-
     close(Stream).
 
 bersihkanFakta :-
-    retract(urutan(_)),
-    retract(giliran(_)),
-    retract(discardPile(_)),
-    retract(arahPermainan(_)),
-    retract(tangan(_, _)),
-    bersihkanFakta.
-
-bersihkanFakta :-
-    retract(uni(_)),
-    bersihkanFakta.
-
-bersihkanFakta.
+    retractall(urutan(_)),
+    retractall(giliran(_)),
+    retractall(discardPile(_)),
+    retractall(arahPermainan(_)),
+    retractall(tangan(_, _)).
 
 bacaSemuaTerm(Stream) :-
     read_term(Stream, Term, []),
@@ -148,5 +132,4 @@ assertTerm(urutan:V)        :- asserta(urutan(V)).
 assertTerm(giliran:V)       :- asserta(giliran(V)).
 assertTerm(discardPile:V)   :- asserta(discardPile(V)).
 assertTerm(arahPermainan:V) :- asserta(arahPermainan(V)).
-assertTerm(uni:V)           :- asserta(uni(V)).
 assertTerm(tangan(P):V)     :- asserta(tangan(P, V)).
