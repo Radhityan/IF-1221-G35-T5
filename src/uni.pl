@@ -58,7 +58,17 @@ tangkap(_) :-
     giliran(Pemain),
     pending_wild_draw_four(_, Pemain, _, _),
     write('Ada kartu wild_draw_four dimainkan! Anda hanya bisa melakukan aksi ambilKartu atau tantang. '), nl, !.
+
+tangkap(Target) :-
+    urutan(ListPemain),
+    \+termasuk_member(Target, ListPemain), !,
+    write('Error! '), write(Target), write(' bukan termasuk pemain saat ini.'), nl.
     
+tangkap(Target) :-
+    giliran(Pemain),
+    Target == Pemain, !,
+    write('Error! tidak bisa menargetkan diri sendiri'), nl.
+
 tangkap(Target):-
     giliran(Pemain),
     status_UNI(Target),
