@@ -1,6 +1,15 @@
 /* SAVE GAME */
 
 saveGame :-
+    giliran(Pemain),
+    pending_wild_draw_four(_, Pemain, _, _),
+    write('Tidak dapat menyimpan permainan sekarang.'),
+    nl,
+    write('Anda harus menyelesaikan aksi tantang atau ambilKartu terlebih dahulu.'),
+    nl, 
+    !.
+
+saveGame :-
     write('Masukkan nama file penyimpanan: '),
     read(Nama),
     name(Nama, NamaX),
@@ -77,6 +86,14 @@ simpanSemuaTangan(Stream, [Pemain|Sisa]) :-
 
 
 /* LOAD GAME */
+loadGame :-
+    giliran(Pemain),
+    pending_wild_draw_four(_, Pemain, _, _),
+    write('Tidak dapat memuat permainan sekarang.'),
+    nl,
+    write('Anda harus menyelesaikan aksi tantang atau ambilKartu terlebih dahulu.'),
+    nl, 
+    !.
 
 loadGame :-
     write('Masukkan nama file yang akan dimuat: '),
