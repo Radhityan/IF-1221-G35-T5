@@ -14,7 +14,7 @@ saveGame :-
     read(Nama),
     name(Nama, NamaX),
     name('.txt', NamaY),
-    appendUjung(NamaX, NamaY, NamaZ),  /* utilitasList */
+    gabungList(NamaX, NamaY, NamaZ),  /* utilitasList */
     name(NamaFile, NamaZ),
     cekDanSimpan(NamaFile).
 
@@ -40,7 +40,7 @@ tanganiKonfirmasi(Jawaban, _) :-
     read(NamaBaru),
     name(NamaBaru, NamaBaruX),
     name('.txt', NamaExt),
-    appendUjung(NamaBaruX, NamaExt, NamaBaruZ),  /* utilitasList */
+    gabungList(NamaBaruX, NamaExt, NamaBaruZ),  /* utilitasList */
     name(NamaFileBaru, NamaBaruZ),
     cekDanSimpan(NamaFileBaru).
 
@@ -62,12 +62,8 @@ simpanState(Stream) :-
     discardPile(Discard),
     format(Stream, 'discardPile:~w.~n', [Discard]),
 
-    arahPermainan(Arah),
-    format(Stream, 'arahPermainan:~w.~n', [Arah]),
-
     simpanUni(Stream),
-    urutan(ListPemain2),
-    simpanSemuaTangan(Stream, ListPemain2).
+    simpanSemuaTangan(Stream, ListPemain).
 
 /* Simpan status UNI semua pemain */
 simpanUni(Stream) :-
@@ -100,7 +96,7 @@ loadGame :-
     read(Nama),
     name(Nama, NamaX),
     name('.txt', NamaY),
-    appendUjung(NamaX, NamaY, NamaZ), /* utilitasList */
+    gabungList(NamaX, NamaY, NamaZ), /* utilitasList */
     name(NamaFile, NamaZ),
     cekDanMuat(NamaFile).
 
