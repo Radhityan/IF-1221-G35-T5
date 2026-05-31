@@ -1,66 +1,139 @@
-/* Deklarasi Dynamic */
-:- dynamic urutanPemain/1.
-:- dynamic giliran/1.
-:- dynamic discardTop/1.
-:- dynamic warnaTop/1.
-:- dynamic kartuPemain/2.
-:- dynamic arahPermainan/1.
-:- dynamic statusUni/1.
+/* SAVE GAME */
 
-/* Save Game */
-saveGame:-
-    write("Masukkan nama file penyimpanan: "),
-    read_term(Nama, []),
+saveGame :-
+    write('Masukkan nama file penyimpanan: '),
+    read(Nama),
     name(Nama, NamaX),
     name('.txt', NamaY),
-    appendUjung(NamaX, NamaY, NamaZ), /* aplikasi append dari aksi.pl */
+    appendUjung(NamaX, NamaY, NamaZ),  /* utilitasList */
     name(NamaFile, NamaZ),
+    cekDanSimpan(NamaFile).
+
+/* Cek apakah file sudah ada, minta konfirmasi jika ada */
+cekDanSimpan(NamaFile) :-
+    file_exists(NamaFile),
+    write('File '),
+    write(NamaFile),
+    write(' sudah ada. Timpa? (y/n): '),
+    read(Jawaban),
+    tanganiKonfirmasi(Jawaban, NamaFile).
+
+cekDanSimpan(NamaFile) :-
+    \+ file_exists(NamaFile),
+    lakukanSimpan(NamaFile).
+
+tanganiKonfirmasi(y, NamaFile) :-
+    lakukanSimpan(NamaFile).
+
+tanganiKonfirmasi(Jawaban, _) :-
+    Jawaban \= y,
+    write('Masukkan nama file baru: '),
+    read(NamaBaru),
+    name(NamaBaru, NamaBaruX),
+    name('.txt', NamaExt),
+    appendUjung(NamaBaruX, NamaExt, NamaBaruZ),  /* utilitasList */
+    name(NamaFileBaru, NamaBaruZ),
+    cekDanSimpan(NamaFileBaru).
+
+/* Buka file dan tulis semua state */
+lakukanSimpan(NamaFile) :-
     open(NamaFile, write, Stream),
-    saveState(Stream),
+    simpanState(Stream),
     close(Stream),
-    write("Status permainan berhasil disimpan ke ", NamaFile).
+    format('Status permainan berhasil disimpan ke ~w.~n', [NamaFile]).
 
-saveState(Stream):-
-    urutanPemain(Pemain),
-    format(Stream, "urutan_pemain: ", [Pemain]),
+/* Tulis seluruh state permainan ke file */
+simpanState(Stream) :-
+    urutan(ListPemain),
+    format(Stream, 'urutan:~w.~n', [ListPemain]),
+
     giliran(Giliran),
-    format(Stream, "giliran: ", [Giliran]),
-    discardTop(Discard),
-    format(Stream, "discard_top: ", [Discard]),
-    warnaTop(Warna),
-    format(Stream, "warna_aktif: ", [Warna]),
+    format(Stream, 'giliran:~w.~n', [Giliran]),
+
+    discardPile(Discard),
+    format(Stream, 'discardPile:~w.~n', [Discard]),
+
     arahPermainan(Arah),
-    format(Stream, "arah_permainan: ", [Arah]),
-    statusUni(Uni),
-    format(Stream, "status_UNI: ", [UNI]),
-    kartuPemain(Kartu),
-    saveKartu(Stream, Kartu).
+    format(Stream, 'arahPermainan:~w.~n', [Arah]),
 
-saveKartu(_, []).
-saveKartu(Stream, [Pemain|Sisa]):-
-    listKartu(Pemain, ListKartu),
-    format(Stream, "kartu(): ", [Pemain, ListKartu]),
-    saveKartu(Stream, Sisa).
+    simpanUni(Stream),
+    urutan(ListPemain2),
+    simpanSemuaTangan(Stream, ListPemain2).
 
-/* Load Game */
-loadGame:-
-    write("Masukkan nama file yang akan dimuat: "),
-    read_term(Nama, []),
+/* Simpan status UNI semua pemain */
+simpanUni(Stream) :-
+    uni(PemainUni),
+    format(Stream, 'uni:~w.~n', [PemainUni]),
+    fail.
+
+simpanUni(_).
+
+/* Simpan kartu tangan semua pemain secara rekursif */
+simpanSemuaTangan(_, []).
+simpanSemuaTangan(Stream, [Pemain|Sisa]) :-
+    tangan(Pemain, ListKartu),
+    format(Stream, 'tangan(~w):~w.~n', [Pemain, ListKartu]),
+    simpanSemuaTangan(Stream, Sisa).
+
+
+/* LOAD GAME */
+
+loadGame :-
+    write('Masukkan nama file yang akan dimuat: '),
+    read(Nama),
     name(Nama, NamaX),
     name('.txt', NamaY),
-    appendUjung(NamaX, NamaY, NamaZ),
+    appendUjung(NamaX, NamaY, NamaZ), /* utilitasList */
     name(NamaFile, NamaZ),
-    cekFile(NamaFile).
+    cekDanMuat(NamaFile).
 
-cekFile(NamaFile):-
-    \+ file_exist(NamaFile),
-    loadState(NamaFile).
+/* Cek keberadaan file lalu muat */
+cekDanMuat(NamaFile) :-
+    file_exists(NamaFile),
+    muatState(NamaFile),
+    format('Status permainan berhasil dimuat dari ~w.~n', [NamaFile]),
+    giliran(G),
+    format('Melanjutkan giliran ~w.~n', [G]).
 
-loadState:- 
-    rectract(urutanPemain(_)),
-    rectract(giliran(_)),
-    rectract(discardTop(_)),
-    rectract(warnaTop(_)),
-    rectract(arahPermainan(_)),
-    rectract(statusUni(_)),
-    rectract(kartuPemain(_,_)).
+cekDanMuat(NamaFile) :-
+    \+ file_exists(NamaFile),
+    format('Error: File ~w tidak ditemukan.~n', [NamaFile]).
+
+/* Bersihkan semua fakta lama lalu baca file */
+muatState(NamaFile) :-
+    bersihkanFakta,
+    open(NamaFile, read, Stream),
+    bacaSemuaTerm(Stream),
+    close(Stream).
+
+bersihkanFakta :-
+    retract(urutan(_)),
+    retract(giliran(_)),
+    retract(discardPile(_)),
+    retract(arahPermainan(_)),
+    retract(tangan(_, _)),
+    bersihkanFakta.
+
+bersihkanFakta :-
+    retract(uni(_)),
+    bersihkanFakta.
+
+bersihkanFakta.
+
+bacaSemuaTerm(Stream) :-
+    read_term(Stream, Term, []),
+    Term \= end_of_file,
+    assertTerm(Term),
+    bacaSemuaTerm(Stream).
+
+bacaSemuaTerm(Stream) :-
+    read_term(Stream, Term, []),
+    Term = end_of_file.
+
+/* Petakan setiap term ke fakta dinamis */
+assertTerm(urutan:V)        :- asserta(urutan(V)).
+assertTerm(giliran:V)       :- asserta(giliran(V)).
+assertTerm(discardPile:V)   :- asserta(discardPile(V)).
+assertTerm(arahPermainan:V) :- asserta(arahPermainan(V)).
+assertTerm(uni:V)           :- asserta(uni(V)).
+assertTerm(tangan(P):V)     :- asserta(tangan(P, V)).
