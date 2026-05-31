@@ -96,7 +96,7 @@ sisaPemain([]).
 pembagianKartu([]) :-
     nl, write('Setiap pemain mendapatkan 7 kartu acak.'), nl, nl.
 pembagianKartu([Nama | Sisa]) :-
-    bagiKartu(Nama, 3, []),
+    bagiKartu(Nama, 7, []),
     pembagianKartu(Sisa).
 
 bagiKartu(Nama, 0, Tangan) :-
