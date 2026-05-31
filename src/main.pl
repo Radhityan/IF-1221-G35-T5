@@ -1,0 +1,12 @@
+:- include('kumpulanDynamic.pl').
+:- include('fakta.pl').
+:- include('utilitasList.pl').
+:- include('startGame.pl').
+:- include('mainkanKartu.pl').
+:- include('ambilKartu.pl').
+:- include('sembunyikanKartu.pl').
+:- include('uni.pl').
+:- include('tangkap.pl').
+:- include('aksiPendukung.pl').
+:- include('endGame.pl').
+:- include('godsHand.pl').
