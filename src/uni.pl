@@ -53,6 +53,12 @@ cekEndGame(Pemain),
 efekKartu(Jenis),
 gantiGiliran, !.
 
+/* Kasus pemain dikenakan wild_draw_four */
+tangkap(_) :-
+    giliran(Pemain),
+    pending_wild_draw_four(_, Pemain, _, _),
+    write('Ada kartu wild_draw_four dimainkan! Anda hanya bisa melakukan aksi ambilKartu atau tantang. '), nl, !.
+    
 tangkap(Target):-
     giliran(Pemain),
     status_UNI(Target),
