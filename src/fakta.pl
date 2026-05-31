@@ -66,4 +66,4 @@ kartu(biru, revers).
 /* hitam */
 kartu(hitam, wild_draw_four).
 kartu(hitam, wild).
-
+kartu(hitam, mimic).

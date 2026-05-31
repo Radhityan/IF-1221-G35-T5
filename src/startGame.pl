@@ -1,6 +1,8 @@
+/* Perintah untuk memulai permainan */
 startGame :-
+    randomize,
     retractall(giliran(_)),
-    retractall(giliran1(_)), 
+    retractall(giliran1(_)), /* hanya semetara */
     retractall(urutan(_)),
     retractall(pemain(_)),
     retractall(tangan(_,_)),
@@ -13,6 +15,7 @@ startGame :-
     giliran(GiliranPertama), nl,
     write('Giliran '), write(GiliranPertama), write('.').
 
+/* pengecekan jumlah pemain */
 cek(Jumlah):-
     Jumlah >= 2, Jumlah =< 4, !,
     inputPemain(1, Jumlah),
@@ -25,6 +28,7 @@ cek(_):-
 inputPemain(Index, Max) :-
     Index > Max, !.
 
+/* proses input nama */
 inputPemain(Index, Max) :-
     Index =< Max,
     write('Masukkan nama pemain '), write(Index), write(': '),
@@ -40,20 +44,8 @@ inputPemain(Index, Max) :-
     Index =< Max,
     write('Nama sudah digunakan. Masukkan nama lain!'), nl, !,
     inputPemain(Index, Max).
-    
-    
-    
-/* validasiNama(Nama, Valid),
-    assertz(pemain(Valid)), 
-    NextIndex is Index + 1,
-    inputPemain(NextIndex, Max).*/
 
-/* validasiNama(Nama, Valid) :-
-    pemain(Nama), !, 
-    write('Nama sudah digunakan. Masukkan nama lain: '),
-    read(Nama1), validasiNama(Nama1, Valid).
-validasiNama(Nama, Nama). */
-
+/* mengacak urutan pemain dari listPemain */
 acakUrutan :-
     semuaPemain(ListPemain),
     acakList(ListPemain, ListUrutan),
@@ -97,6 +89,7 @@ sisaPemain([Kedua|Sisa]) :-
     sisaPemain(Sisa).
 sisaPemain([]).
 
+/* pembagian kartu */
 pembagianKartu([]) :-
     nl, write('Setiap pemain mendapatkan 7 kartu acak.'), nl, nl.
 pembagianKartu([Nama | Sisa]) :-
@@ -116,6 +109,7 @@ bagiKartu(Nama, N, TanganLama) :-
     N1 is N - 1,
     bagiKartu(Nama, N1, TanganBaru).
 
+/* kartu awal untuk memulai permainan */
 discardTop(KartuAwal) :-
     cariKartu(ListKartu),
     panjang(ListKartu, PanjangList),
