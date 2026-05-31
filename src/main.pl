@@ -9,3 +9,4 @@
 :- include('tangkap.pl').
 :- include('aksiPendukung.pl').
 :- include('endGame.pl').
+:- include('godsHand.pl').

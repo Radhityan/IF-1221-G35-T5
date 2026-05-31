@@ -39,6 +39,8 @@ mainkanKartu(X):-
     retract(tangan(Pemain, ListKartu)),
     asserta(tangan(Pemain, ListKartuBaru)),
     (retract(sembunyi(Pemain, kartu(Warna, Jenis))) -> true; true),
+    (termasuk_member(Jenis, [skip, draw_two, revers, wild_draw_four, mimic]) 
+     -> asserta(riwayat_aksi(Warna, Jenis)) ; true),
     cekEndGame(Pemain),
     efekKartu(Jenis),
     gantiGiliran,
@@ -53,6 +55,8 @@ validasiKartu(_, draw_two) :-
     discardPile([kartu(_, draw_two) | _]), !,
     write('Aturan: Tidak boleh menumpuk kartu draw_two berturut-turut!'), nl, fail.
 
+validasiKartu(hitam,mimic):- !.
+
 validasiKartu(Warna, _):-
     discardPile([kartu(Warna, _)|_]).
 
@@ -62,7 +66,7 @@ validasiKartu(_, Jenis):-
 validasiKartu(hitam, _).
 
 efekKartu(Jenis) :-
-    \+ termasuk_member(Jenis, [skip, draw_two, revers, wild, wild_draw_four]), !.
+    \+ termasuk_member(Jenis, [skip, draw_two, revers, wild, wild_draw_four, mimic]), !.
 
 efekKartu(skip):-
     gantiGiliran,
@@ -99,6 +103,22 @@ efekKartu(wild_draw_four):-
     assertz(pending_wild_draw_four(Pemain, Next, WarnaLama, AngkaLama)),
     retract(discardPile(_)),
     assertz(discardPile([kartu(WarnaBaru, wild_draw_four)])).
+
+efekKartu(mimic) :-
+    write('Menelusuri riwayat permainan...'), nl,
+    (riwayat_aksi(WarnaAsal, JenisAksi) ->  write('Kartu aksi terakhir yang dimainkan: '), write(WarnaAsal), write('-'), write(JenisAksi), nl,
+    write('Kartu Mimic menyalin efek '), write(JenisAksi), nl,
+
+    /* efek yang sama seperti kartu hitam lainnya */
+    write('Pilih warna (merah, biru, hijau, kuning): '), read(WarnaBaru),
+    termasuk_member(WarnaBaru, [merah, biru, hijau, kuning]), !,
+
+    retract(discardPile(_)),
+    asserta(discardPile([kartu(WarnaBaru, mimic)])),
+
+    efekKartu(JenisAksi) ; 
+    write('Tidak ada kartu aksi di riwayat! Mimic menjadi wild biasa.'), nl,
+    efekKartu(wild)).
 
 
     /* efekKartu(wild),
