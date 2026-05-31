@@ -22,9 +22,7 @@ getElement(Index, ListKartu, kartu(Warna, Jenis)),
 \+sembunyi(Pemain, kartu(Warna, Jenis)),
 assertz(sembunyi(Pemain, kartu(Warna, Jenis))),
 write('Kartu '), write(Warna), write('-'), write(Jenis), write(' berhasil disembunyikan.'), nl, 
-gantiGiliran, 
-giliran(NextPemain),
-write('Giliran '), write(NextPemain), write('.'), nl, !.
+gantiGiliran,!.
 
 /* Kasus kartu sudah pernah disembunyikan */
 sembunyikanKartu(Index) :-

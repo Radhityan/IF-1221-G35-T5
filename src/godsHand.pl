@@ -7,8 +7,6 @@ sisa_Kartu_Pemain([Pemain | Sisa]) :-
     sisa_Kartu_Pemain(Sisa).
 
 godsHand :-
-    giliran(Pemain),
-
     urutan(SemuaPemain),
     (sisa_Kartu_Pemain(SemuaPemain)
     -> write('Mekanisme God''s Hand tidak dapat dijalankan untuk menjaga keseimbangan permainan!'), nl;   
@@ -44,6 +42,4 @@ godsHand :-
     write(' berpindah ke tangan '), write(Penerima), write('!'), nl;
 
     write('Tuhan belum berkehendak pada giliran ini...'), nl)),
-    gantiGiliran,
-    giliran(NextPemain),
-    write('Giliran '), write(NextPemain), write('.'), nl, !.
+    gantiGiliran,!.
