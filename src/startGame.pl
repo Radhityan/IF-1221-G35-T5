@@ -7,6 +7,7 @@ startGame :-
     retractall(pemain(_)),
     retractall(tangan(_,_)),
     retractall(discardPile(_)),
+    retractall(status_UNI(_)),
     write('Masukkan jumlah pemain: '),
     read(Jumlah),
     cek(Jumlah),
@@ -93,7 +94,7 @@ sisaPemain([]).
 pembagianKartu([]) :-
     nl, write('Setiap pemain mendapatkan 7 kartu acak.'), nl, nl.
 pembagianKartu([Nama | Sisa]) :-
-    bagiKartu(Nama, 7, []),
+    bagiKartu(Nama, 3, []),
     pembagianKartu(Sisa).
 
 bagiKartu(Nama, 0, Tangan) :-
@@ -121,4 +122,5 @@ discardTop(KartuAwal) :-
     assertz(discardPile([KartuAwal])),
     write('Kartu discard top: '), write(W), write(' - '), write(J), write('.'), nl, !
     ;discardTop(KartuAwal)).
+
 

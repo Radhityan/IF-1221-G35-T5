@@ -14,7 +14,8 @@ ListBaru = [Kartu|List],
 assertz(list_kartu(ListBaru)).
 
 /* Helper mengambil kartu untuk 1 atau lebih kartu */
-ambil_kartu(_, 0) :- !.
+ambil_kartu(Pemain, 0) :- status_UNI(Pemain), retract(status_UNI(Pemain)), !.
+ambil_kartu(Pemain, 0) :- \+status_UNI(Pemain), !.
 ambil_kartu(Pemain, Jumlah) :-
 Jumlah > 0,
 cariKartu(ListKartu),
@@ -29,7 +30,7 @@ retract(tangan(Pemain, TanganLama)),
 assertz(tangan(Pemain, TanganBaru)),
 write(Pemain), write(' mendapatkan kartu: '), write(KartuAcak), nl, 
 SisaJumlah is Jumlah - 1,
-ambil_kartu(Pemain, SisaJumlah).
+ambil_kartu(Pemain, SisaJumlah), !.
 
 /* Aksi ambilKartu jika pemain tidak menantang kartu wild_draw_four */
 ambilKartu :-
@@ -40,16 +41,12 @@ write('Anda memilih untuk tidak menantang '), write(Pemain), write('.'), nl,
 write('Anda dihukum mengambil 4 kartu dan giliran anda dilewati.'), nl,
 ambil_kartu(PemainSekarang, 4),
 retractall(pending_wild_draw_four(_, _, _, _)),
-gantiGiliran,
-giliran(NextPemain),
-write('Giliran '), write(NextPemain), write('.'), nl, !.
+gantiGiliran, !.
 
 /* Aksi ambilKartu */
 ambilKartu :- 
 giliran(Pemain),
 ambil_kartu(Pemain, 1),
-gantiGiliran,
-giliran(NextPemain),
-write('Giliran '), write(NextPemain), write('.'), nl, !.
+gantiGiliran, !.
 
 

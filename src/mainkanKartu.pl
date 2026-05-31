@@ -5,7 +5,8 @@ gantiGiliran :-
     asserta(urutan(UrutanBaru)),
     UrutanBaru = [NextPemain|_],
     retract(giliran(_)),
-    asserta(giliran(NextPemain)).
+    asserta(giliran(NextPemain)),
+    write('Giliran '), write(NextPemain), write('.'), nl, !.
 
 mainkanKartu(_) :-
     giliran(Pemain),
@@ -25,7 +26,7 @@ mainkanKartu(X):-
     getElement(X, ListKartu, kartu(Warna, Jenis)),
     \+ validasiKartu(Warna, Jenis),
     write('Kartu '), write(Warna), write('-'), write(Jenis), 
-    write(' tidak cocok dengan kartu di atas discard pile!'), nl.
+    write(' tidak cocok dengan kartu di atas discard pile!'), nl, !.
 
 mainkanKartu(X):-
     giliran(Pemain),
@@ -38,14 +39,13 @@ mainkanKartu(X):-
     hapusElemenList(X, ListKartu, ListKartuBaru),
     retract(tangan(Pemain, ListKartu)),
     asserta(tangan(Pemain, ListKartuBaru)),
+    efekKartu(Jenis),
     (retract(sembunyi(Pemain, kartu(Warna, Jenis))) -> true; true),
     (termasuk_member(Jenis, [skip, draw_two, revers, wild_draw_four, mimic]) 
      -> asserta(riwayat_aksi(Warna, Jenis)) ; true),
     cekEndGame(Pemain),
-    efekKartu(Jenis),
-    gantiGiliran,
-    giliran(NextPemain),
-    write('Giliran '), write(NextPemain), write('.'), nl, !.
+    gantiGiliran, !.
+
 
 validasiKartu(_, wild_draw_four) :-
     discardPile([kartu(_, wild_draw_four) | _]), !,
@@ -74,10 +74,11 @@ efekKartu(skip):-
     write('Giliran '), write(PemainSkip), write(' dilompati'), nl.
 
 efekKartu(draw_two):-
-    urutan([_, Next|_]),
+    gantiGiliran,
+    giliran(Next),
     ambil_kartu(Next, 2),
-    write(Next), write(' Mengambil dua kartu'), nl,
-    gantiGiliran.
+    write(Next), write(' Mengambil dua kartu dan gilirannya dilompati'), nl.
+    
 
 efekKartu(revers):-
     urutan(UrutanLama),
@@ -120,26 +121,6 @@ efekKartu(mimic) :-
     write('Tidak ada kartu aksi di riwayat! Mimic menjadi wild biasa.'), nl,
     efekKartu(wild)).
 
-
-    /* efekKartu(wild),
-    urutan([_, Next|_]),
-    write(Next), write('terkena draw four, ingin tantang?(iya/tidak)'), nl,
-    read(Answer),
-    termasuk_member(Answer, [iya, tidak]), !,
-    Answer = tidak,
-    ambil_kartu(Next, 4),
-    efekKartu(skip). */
-
-/*efekKartu(wild_draw_four):-
-    efekKartu(wild),
-    urutan([Next|_]),
-    write(Next), write('terkena draw four, ingin tantang?(iya/tidak)'), nl,
-    read(Answer),
-    termasuk_member(Answer, [iya, tidak]), !,
-    Answer = iya,
-    giliran(Pemain),
-    tantang(Pemain).*/
-
 tantang :-
     pending_wild_draw_four(Pemain, Next, WarnaLama, AngkaLama),
     giliran(PemainSekarang),
@@ -147,7 +128,7 @@ tantang :-
     write('Tantangan dilakukan!'), nl,
     write('Memeriksa kartu, '), write(Pemain), write('...'), nl,
     tangan(Pemain, ListKartu),
-    ( (cekWarnaDiTangan(WarnaLama, ListKartu) ; cekAngkaDiTangan(AngkaLama, ListKartu)) ->
+    ((cekWarnaDiTangan(WarnaLama, ListKartu) ; cekAngkaDiTangan(AngkaLama, ListKartu)) ->
     write('Tantangan berhasil! '), write(Pemain), write(' terbukti memiliki kartu yang cocok.'), nl,
     write(Pemain), write(' dihukum mengambil 4 kartu acak!'), nl,
     ambil_kartu(Pemain, 4), 
@@ -156,9 +137,7 @@ tantang :-
     write(Next), write(' dihukum mengambil 6 kartu acak dan gilirannya dilompati!'), nl,
     ambil_kartu(Next, 6),
     retractall(pending_wild_draw_four(_, _, _, _)),
-    gantiGiliran),
-    giliran(NextPemain),
-    write('Giliran '), write(NextPemain), write('.'), nl.
+    gantiGiliran),!.
 
 tantang :-
     \+ pending_wild_draw_four(_, _, _, _),
@@ -170,24 +149,6 @@ cekEndGame(Pemain) :-
     halt.
 
 cekEndGame(_).
-
-/*tantang(Pemain) :-
-    tangan(Pemain, ListKartu),
-    discardPile(kartu(Warna,_)),
-    cekWarnaDiTangan(Warna, ListKartu), !,
-    write('Tantangan Berhasil! '), write(Pemain), 
-    write(' terbukti memiliki kartu berwarna '), write(Warna), write('.'), nl,
-    write(Pemain), write(' harus mengambil 4 kartu sebagai hukuman!'), nl,
-    bagiKartu(Pemain, 4, ListKartu).
-    
-tantang(Pemain) :-
-    urutan([Next|_Sisa]),
-    tangan(Next, Tangan),
-    write('Tantangan Gagal! '), write(Pemain), 
-    write(' tidak berbohong.'), nl,
-    bagiKartu(Next, 6, Tangan),
-    write(Next), write(' dihukum mengambil 6 kartu dan gilirannya dilompati!'), nl,
-    efekKartu(skip). */
     
 cekWarnaDiTangan(WarnaTarget, [kartu(WarnaTarget, _) | _]) :- !.
 cekWarnaDiTangan(WarnaTarget, [_ | Sisa]) :-

@@ -17,9 +17,7 @@ panjang(ListKartu, Jumlah),
 Jumlah \= 2,
 ambil_kartu(Pemain, 1),
 write('UNI tidak valid karena memainkan kartu tidak menyisakan 1 kartu!'), nl, 
-gantiGiliran,
-giliran(NextPemain),
-write('Giliran '), write(NextPemain), write('.'), nl, !.
+gantiGiliran, !.
 
 uni(Index) :-
 giliran(Pemain),
@@ -48,12 +46,39 @@ retract(tangan(Pemain, ListKartu)),
 asserta(tangan(Pemain, ListKartuBaru)),
 (retract(sembunyi(Pemain, kartu(Warna, Jenis))) -> true; true),
 /* Mengamankan status UNI */
-retractall(status_UNI(_)),
 assertz(status_UNI(Pemain)),
 /* Memeriksa endGame */
 cekEndGame(Pemain),
 /* Lanjutan alur permainan */
 efekKartu(Jenis),
-gantiGiliran,
-giliran(NextPemain),
-write('Giliran '), write(NextPemain), write('.'), nl, !.
+gantiGiliran, !.
+
+tangkap(Target):-
+    giliran(Pemain),
+    status_UNI(Target),
+    tangan(Target, KartuTarget),
+    panjang(KartuTarget, Jumlah),
+    Jumlah == 1,
+    write('Gagal menangkap! '), write(Target), write(' sudah dalam berstatus UNI!'), nl,
+    write(Pemain), write(' Mendapatkan satu kartu hukuman.'), nl,
+    ambil_kartu(Pemain, 1), !.
+
+tangkap(Target):-
+    giliran(Pemain),
+    \+status_UNI(Target),
+    tangan(Target, KartuTarget),
+    panjang(KartuTarget, Jumlah),
+    Jumlah \= 1,
+    write('Gagal menangkap! '), write(Target), write(' tidak memiliki sisa kartu 1!'), nl,
+    write(Pemain), write(' Mendapatkan satu kartu hukuman.'), nl,
+    ambil_kartu(Pemain, 1), !.
+
+tangkap(Target):-
+    \+status_UNI(Target),
+    tangan(Target, KartuTarget),
+    panjang(KartuTarget, Jumlah),
+    Jumlah == 1,
+    write('Berhasil menangkap! '), write(Target), write(' tidak berstatus UNI!'), nl,
+    write(Target), write(' Mendapatkan dua kartu hukuman.'), nl,
+    ambil_kartu(Target, 2),
+    gantiGiliran, !.
