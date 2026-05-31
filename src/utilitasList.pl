@@ -43,3 +43,8 @@ panjang_tidakdisembunyikan(Pemain, Sisa, Jumlah).
 panjang_tidakdisembunyikan(Pemain, [_|Sisa], Jumlah) :-
 panjang_tidakdisembunyikan(Pemain, Sisa, SisaJumlah),
 Jumlah is SisaJumlah + 1.
+
+/* Penggabungan */
+gabungList([], L, L).
+gabungList([H|T], L, [H|Hasil]) :-
+    gabungList(T, L, Hasil).

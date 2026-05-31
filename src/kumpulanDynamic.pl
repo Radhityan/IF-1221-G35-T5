@@ -1,11 +1,3 @@
-/* Deklarasi Dynamic dari saveLoad 
-:- dynamic urutan/1.
-:- dynamic giliran/1.
-:- dynamic discardTop/1.
-:- dynamic warnaTop/1.
-:- dynamic tangan/2.
-:- dynamic arahPermainan/1.
-:- dynamic statusUni/1.*/
 /* Deklarasi Dynamic dari mainkanKartu */
 :- dynamic(giliran/1).
 :- dynamic(giliran1/1). 
@@ -20,4 +12,7 @@
 :- dynamic(uni/1).
 /* Deklarasi Dynamic dari sembunyikanKartu */
 :- dynamic(sembunyi/2).
+/* Deklarasi Dynamic dari saveLoad */
+:- dynamic(arahPermainan/1).
+:- dynamic(listAwal/1).
 
